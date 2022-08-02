@@ -3,9 +3,11 @@ package com.scb.rpg.springplayground.dao.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.scb.rpg.springplayground.dao.ICustomerDAO;
 import com.scb.rpg.springplayground.entities.Customer;
@@ -36,16 +38,40 @@ public class CustomerDAO implements ICustomerDAO {
 		String query="Select  id,name,email,contact,account_type,account_creation_date from customer";
 		RowMapper<Customer> rowMapper=new CustomerRowMapper();
 		List<Customer> list=template.query(query, rowMapper);
+		
+		if(!list.isEmpty()) {
 		return list;
+		}
+		else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No customers found in database");
+		}
 	}
 
 	@Override
 	public Customer getCustomerById(int id) {
+		try {
 		String query="Select  id,name,email,contact,account_type,account_creation_date from customer where id=?";
 		RowMapper<Customer> rowMapper=new CustomerRowMapper();
 		Customer c=template.queryForObject(query, rowMapper, id);
-		return c;
-	}
+		
+		if(c!=null) {
+			return c;
+		}
+		else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Customer with id: "+id+" is not found");
+		}
+		
+		
+		}
+		catch (Exception e) {
+			if(e instanceof ResponseStatusException) {
+				throw e;
+			}
+			else {
+				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+			}
+		}
+		}
 
 	@Override
 	public String updateCustomer(Customer c, int id) {
