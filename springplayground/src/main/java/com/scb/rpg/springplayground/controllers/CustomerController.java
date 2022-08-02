@@ -3,6 +3,8 @@ package com.scb.rpg.springplayground.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,33 +23,43 @@ public class CustomerController {
 	ICustomerService customerService;
 	
 	@GetMapping("/customers")
-	public List<Customer> getAllCustomers(){
+	public ResponseEntity<List<Customer>> getAllCustomers(){
 		List<Customer> customers=customerService.getAllCustomers();
-		return customers;
+		HttpStatus status=HttpStatus.OK;
+		ResponseEntity<List<Customer>> response=new ResponseEntity<List<Customer>>(customers, status);
+		return response;
 	}
 	
 	@GetMapping("/customers/{id}")
-	public Customer getCustomerById(@PathVariable int id) {
+	public ResponseEntity<Customer> getCustomerById(@PathVariable int id) {
 		Customer c=customerService.getCustomerById(id);
-		return c;
+		HttpStatus status=HttpStatus.OK;
+		ResponseEntity<Customer> response=new ResponseEntity<Customer>(c, status);
+		return response;
 	}
 	
 	@PostMapping("/customers")
-	public String addCustomer(@RequestBody Customer c) {
+	public ResponseEntity<String> addCustomer(@RequestBody Customer c) {
 		String message=customerService.addCustomer(c);
-		return message;
+		HttpStatus status=HttpStatus.CREATED;
+		ResponseEntity<String> response=new ResponseEntity<String>(message, status);
+		return response;
 	}
 	
 	@PutMapping("/customers/{id}")
-	public String updateCustomer(@RequestBody Customer c,@PathVariable int id) {
+	public ResponseEntity<String> updateCustomer(@RequestBody Customer c,@PathVariable int id) {
 		String message=customerService.updateCustomer(c, id);
-		return message;
+		HttpStatus status=HttpStatus.CREATED;
+		ResponseEntity<String> response=new ResponseEntity<String>(message, status);
+		return response;
 	}
 	
 	@DeleteMapping("/customers/{id}")
-	public String deleteCustomer(@PathVariable int id) {
+	public ResponseEntity<String> deleteCustomer(@PathVariable int id) {
 		String message=customerService.deleteCustomer(id);
-		return message;
+		HttpStatus status=HttpStatus.NO_CONTENT;
+		ResponseEntity<String> response=new ResponseEntity<String>(message, status);
+		return response;
 	}
 
 }
