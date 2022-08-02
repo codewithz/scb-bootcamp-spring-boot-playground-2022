@@ -74,7 +74,7 @@ public class CustomerController {
 	@DeleteMapping("/customers/{id}")
 	public ResponseEntity<ApiSuccessPayload> deleteCustomer(@PathVariable int id) {
 		String message=customerService.deleteCustomer(id);
-		HttpStatus status=HttpStatus.NO_CONTENT;
+		HttpStatus status=HttpStatus.OK;
 		
 		ApiSuccessPayload payload=ApiSuccessPayload.build(message, message, status);
 		
