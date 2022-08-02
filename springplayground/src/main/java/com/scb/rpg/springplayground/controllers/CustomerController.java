@@ -40,12 +40,14 @@ public class CustomerController {
 	
 	@PutMapping("/customers/{id}")
 	public String updateCustomer(@RequestBody Customer c,@PathVariable int id) {
-		return null;
+		String message=customerService.updateCustomer(c, id);
+		return message;
 	}
 	
 	@DeleteMapping("/customers/{id}")
 	public String deleteCustomer(@PathVariable int id) {
-		return null;
+		String message=customerService.deleteCustomer(id);
+		return message;
 	}
 
 }
