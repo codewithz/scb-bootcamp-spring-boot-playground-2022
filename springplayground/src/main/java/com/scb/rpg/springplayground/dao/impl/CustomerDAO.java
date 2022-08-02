@@ -3,6 +3,7 @@ package com.scb.rpg.springplayground.dao.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -20,6 +21,7 @@ public class CustomerDAO implements ICustomerDAO {
 
 	@Override
 	public String addCustomer(Customer c) {
+		try {
 		System.out.println("---- DAO Layer ----");
 		String query="Insert into customer(name,email,contact,account_type,account_creation_date) values (?,?,?,?,?)";
 		int rowsInserted=template.update(query,c.getName(),c.getEmail(),c.getContact(),c.getAccountType(),c.getAccountCreationDate());
@@ -28,7 +30,12 @@ public class CustomerDAO implements ICustomerDAO {
 			return "SUCCESS";
 		}
 		else {
-			return "FAILURE";
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not added successfully");
+		}
+		}
+		catch (DataAccessException e) {
+			// TODO: handle exception
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	
 	}
@@ -53,24 +60,23 @@ public class CustomerDAO implements ICustomerDAO {
 		String query="Select  id,name,email,contact,account_type,account_creation_date from customer where id=?";
 		RowMapper<Customer> rowMapper=new CustomerRowMapper();
 		Customer c=template.queryForObject(query, rowMapper, id);
+		return c;
 		
-		if(c!=null) {
-			return c;
 		}
-		else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Customer with id: "+id+" is not found");
-		}
+		catch (DataAccessException e) {
 		
-		
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Customer with id: "+id+" is not found");
 		}
 		catch (Exception e) {
-			if(e instanceof ResponseStatusException) {
-				throw e;
+			// TODO: handle exception
+			if( e instanceof ResponseStatusException) {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Customer with id: "+id+" is not found");
 			}
 			else {
 				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
 			}
 		}
+		
 		}
 
 	@Override
@@ -83,7 +89,7 @@ public class CustomerDAO implements ICustomerDAO {
 			return "SUCCESS";
 		}
 		else {
-			return "FAILURE";
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not updated successfully");
 		}
 	}
 
@@ -97,7 +103,7 @@ public class CustomerDAO implements ICustomerDAO {
 			return "SUCCESS";
 		}
 		else {
-			return "FAILURE";
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not deleted successfully");
 		}
 	}
 
