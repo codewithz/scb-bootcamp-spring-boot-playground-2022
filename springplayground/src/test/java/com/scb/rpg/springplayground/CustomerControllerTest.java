@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,6 +71,24 @@ public class CustomerControllerTest {
 		Assertions.assertEquals(customersReturned.size(), 3);
 		Assertions.assertEquals(customersReturned.get(1).getEmail(),"alex@gmail.com" );
 		
+	}
+	
+	@Test
+	public void getCustomerById_success() throws Exception{
+		
+		Customer customer=c2;
+		
+		Mockito.when(customerDAO.getCustomerById(customer.getId())).thenReturn(customer);
+		
+		
+//		When 
+		Customer customerReturned=customerDAO.getCustomerById(2);
+		
+//		Then
+		
+		Assertions.assertNotNull(customerReturned);
+		Assertions.assertEquals(customer.getEmail(), "alex@gmail.com");
+		Assertions.assertEquals(customer.getAccountType(), "Savings");
 	}
 	
 
