@@ -19,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -87,9 +88,63 @@ public class CustomerControllerTest {
 //		Then
 		
 		Assertions.assertNotNull(customerReturned);
-		Assertions.assertEquals(customer.getEmail(), "alex@gmail.com");
-		Assertions.assertEquals(customer.getAccountType(), "Savings");
+		Assertions.assertEquals(customerReturned.getEmail(), "alex@gmail.com");
+		Assertions.assertEquals(customerReturned.getAccountType(), "Current");
 	}
+	
+	@Test
+	public void createCustomer_success() throws Exception{
+		
+		Customer customer=c1;
+		
+		Mockito.when(customerDAO.addCustomer(customer)).thenReturn("SUCCESS");
+		
+		
+//		When 
+		String message=customerDAO.addCustomer(customer);
+		
+//		Then
+		
+		Assertions.assertNotNull(message);
+		Assertions.assertEquals(message, "SUCCESS");
+		
+	}
+	
+	@Test
+	public void updateCustomer_success() throws Exception{
+		
+		Customer customer=c1;
+		
+		Mockito.when(customerDAO.updateCustomer(customer, 1)).thenReturn("SUCCESS");
+		
+		
+//		When 
+		String message=customerDAO.updateCustomer(customer, 1);
+		
+//		Then
+		
+		Assertions.assertNotNull(message);
+		Assertions.assertEquals(message, "SUCCESS");
+		
+	}
+	
+	@Test
+	public void deleteCustomer_success() throws Exception{
+		
+		
+		
+		Mockito.when(customerDAO.deleteCustomer(1)).thenReturn("SUCCESS");
+		
+		
+//		When 
+		String message=customerDAO.deleteCustomer(1);
+		
+//		Then
+		
+		Assertions.assertNotNull(message);
+		Assertions.assertEquals(message, "SUCCESS");
+	}
+	
 	
 
 }
